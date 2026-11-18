@@ -1,0 +1,177 @@
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: #141627;
+  color: white;
+  font-family: Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.container {
+  padding: 15px;
+}
+
+h1 {
+  color: #60e8ff;
+  font-size: 36px;
+  margin: 10px 0;
+}
+
+.info {
+  display: flex;
+  justify-content: space-around;
+  margin: 15px 0;
+  font-size: 18px;
+}
+
+.game-area {
+  position: relative;
+  width: min(800px, 92vw, calc(60vh * 800 / 450));
+  margin: 0 auto 20px;
+}
+
+canvas {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  height: auto;
+  border: 3px solid #60e8ff;
+  border-radius: 8px;
+  background: #22283d;
+}
+
+button {
+  background: #60e8ff;
+  color: #141627;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 25px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #35c5df;
+}
+
+#hardMode {
+  background: #ff657a;
+  color: white;
+  margin-left: 10px;
+}
+
+#hardMode:hover {
+  background: #e04460;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(12, 15, 30, 0.96);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 15px;
+  box-sizing: border-box;
+}
+
+.welcome-box h2 {
+  color: #60e8ff;
+  font-size: 24px;
+}
+
+.welcome-box p {
+  color: #d0d6e8;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+#winScreen h2 {
+  color: #35e88b;
+}
+
+.hidden {
+  display: none;
+}
+
+.coin-counter {
+  color: #ffd700;
+  font-size: 20px;
+  font-weight: bold;
+  text-align: center;
+  margin: 10px 0;
+}
+
+#timerMode {
+  background: #ffc857;
+  color: #141627;
+  margin-left: 10px;
+}
+
+#timerMode:hover {
+  background: #e9ac35;
+}
+
+#timeScreen h2 {
+  color: #ffc857;
+}
+
+#coinMode {
+  background: #35e88b;
+  color: #141627;
+  margin-left: 10px;
+}
+
+#coinMode:hover {
+  background: #22bf6c;
+}
+
+#themeButton {
+  background: #dddddd;
+  color: #222222;
+  position: fixed;
+  top: 20px;
+  right: 20px;
+}
+
+.light-mode {
+  background: #f0f0f0;
+  color: #222222;
+}
+
+.light-mode h1 {
+  color: #247da0;
+}
+
+.light-mode .welcome-box p {
+  color: #333333;
+}
+
+.light-mode .overlay {
+  background: rgba(240, 240, 240, 0.96);
+}
+
+.light-mode .welcome-box h2 {
+  color: #247da0;
+}
+
+.light-mode #winScreen h2 {
+  color: #23884a;
+}
+
+.light-mode #timeScreen h2 {
+  color: #b07716;
+}
+
+.light-mode canvas {
+  border-color: #22c55e;
+}
+
+.light-mode .coin-counter {
+  color: #b07716;
+}

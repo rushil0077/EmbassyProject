@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Maze Escape</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+ <div class="container">
+    <h1>Maze Escape</h1>
+    <p>Reach The End Cube To Win!</p>
+    <p class="coin-counter hidden" id="coinDisplay">
+    Coins: <span id="coins">0</span>/5
+    </p>
+<div class="info">
+  <div>
+    <div>Level: <span id="level">1</span></div>
+    <div id="timerDisplay" class="hidden">
+    Time: <span id="timer">0</span>s
+    </div>
+  </div>
+
+  <div>
+    <div>High Score: <span id="highScore">--</span></div>
+    <div>Moves: <span id="moves">0</span></div>
+  </div>
+</div>
+
+    <div class="game-area">
+      <canvas id="game" width="800" height="450"></canvas>
+
+      <div id="welcome" class="overlay">
+        <div class="welcome-box">
+          <h2>Welcome to Maze Escape!</h2>
+          <p>Win by completing the maze by using WASD or the arrows.</p>
+          <p>Explore 4 Different Modes!</p>
+          <button id="start">Start Game</button>
+        </div>
+      </div>
+
+      <div id="timeScreen" class="overlay hidden">
+  <div class="welcome-box">
+    <h2 id="timeTitle">Time's Up!</h2>
+    <p id="timeMessage">You ran out of time!</p>
+    <button id="tryAgain">Try Again</button>
+  </div>
+</div>
+
+      <div id="winScreen" class="overlay hidden">
+        <div class="welcome-box">
+          <h2>Congratulations!</h2>
+          <p>You escaped all 3 mazes!</p>
+          <p>You won the game!</p>
+          <button id="playAgain">Play Again</button>
+        </div>
+      </div>
+    </div>
+
+    <button id="restart">New Maze</button>
+    <button id="hardMode">Hard Mode</button>
+    <button id="timerMode">Timer Mode</button>
+    <button id="coinMode">Coin Mode</button>
+    <button id="themeButton">Light Mode</button>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
+
