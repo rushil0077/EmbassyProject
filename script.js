@@ -8,6 +8,8 @@ let rows = 10;
 let hardMode = false;
 let timerMode = false;
 let coinMode = false;
+let solarMode = false;
+let activePlanet = null;
 let lightMode = false;
 let maze = [];
 let player = { x: 0, y: 0 };
@@ -22,6 +24,45 @@ let changingLevel = false;
 let nextLevelTimer;
 let seconds = 0;
 let timerInterval;
+
+const planets = [
+{    
+  name: "Mercury",
+      color: "#999999",
+    question: "Which planet is closest to the Sun?",
+    answers: ["Venus", "Mercury", "Mars"],
+    correct: 1
+  },
+{
+      name: "Venus",
+    color: "#e5b567",
+    question: "What is the hottest planet?",
+    answers: ["Venus", "Earth", "Mercury"],
+    correct: 0
+  },
+  {
+    name: "Earth",
+    color: "#3498db",
+    question: "How much of Earth's surface is covered by water?",
+    answers: ["50%", "90%", "71%"],
+    correct: 2
+ },
+  {
+        name: "Mars",
+    color: "#e74c3c",
+    question: "What gives Mars its reddish color?",
+    answers: ["Iron oxide", "Lava", "Copper"],
+    correct: 0
+  },
+  {
+        name: "Jupiter",
+    color: "#d49a70",
+    question: "What is Jupiter's Great Red Spot?",
+    answers: ["A volcano", "A giant storm", "A crater"],
+    correct: 1
+}
+];
+
 
 function startTimer() {
   clearInterval(timerInterval);
@@ -81,7 +122,7 @@ function generateMaze() {
 coins = [];
 coinsCollected = 0;
 
-while (coinMode && coins.length < 5) {
+while ((coinMode || solarMode) && coins.length < 5) {
   let x = Math.floor(Math.random() * cols);
   let y = Math.floor(Math.random() * rows);
   if (
@@ -90,10 +131,9 @@ while (coinMode && coins.length < 5) {
     !(x === cols - 1 && y === rows - 1) &&
     !coins.some(coin => coin.x === x && coin.y === y)
   ) {
-    coins.push({ x, y });
+    coins.push({ x, y, planet: coins.length });
   }
 }
-
   stopTimer();
 seconds = 0;
 document.getElementById("timer").textContent = timerMode ? 30 : 0;
@@ -108,9 +148,7 @@ if (gameStarted && timerMode) {
 function draw() {
   const tileWidth = canvas.width / cols;
   const tileHeight = canvas.height / rows;
-
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-
   for (let y = 0; y < rows; y++) {
     for (let x = 0; x < cols; x++) {
     ctx.fillStyle = maze[y][x]
@@ -135,11 +173,12 @@ ctx.fillRect(
 ctx.fillStyle = "#ffd700";
 
 for (const coin of coins) {
+  ctx.fillStyle = solarMode ? planets[coin.planet].color : "#ffd700";
   ctx.beginPath();
   ctx.arc(
     (coin.x + 0.5) * tileWidth,
     (coin.y + 0.5) * tileHeight,
-    Math.min(tileWidth, tileHeight) / 5,
+    Math.min(tileWidth, tileHeight) / (solarMode ? 3 : 5),
     0,
     Math.PI * 2
   );
@@ -148,7 +187,6 @@ for (const coin of coins) {
 
 if (playerImage.complete && playerImage.naturalWidth > 0) {
   const playerSize = Math.min(tileWidth, tileHeight) * 0.8;
-
   ctx.drawImage(
     playerImage,
     (player.x + 0.5) * tileWidth - playerSize / 2,
@@ -159,9 +197,35 @@ if (playerImage.complete && playerImage.naturalWidth > 0) {
 }
 }
 
+function askQuestion(coin) {
+  activePlanet = coin;
+  const planet = planets[coin.planet];
+  document.getElementById("planetName").textContent = planet.name;
+  document.getElementById("planetQuestion").textContent = planet.question;  document.getElementById("feedback").textContent = "";
+  for(let i = 0; i < 3; i++) {
+  document.getElementById("answer" + i).textContent = planet.answers[i];    document.getElementById("answer" + i).onclick = () => {
+      if(i === planet.correct){
+        coins.splice(coins.indexOf(activePlanet), 1);
+        coinsCollected++;
+        activePlanet = null;
+        document.getElementById("planetScreen").classList.add("hidden");
+        updateInfo();
+        draw();
+      } else {
+        document.getElementById("feedback").textContent = 
+        "Incorrect! Try again";
+      }
+    };
+  }
+  document.getElementById("planetScreen").classList.remove("hidden");
+}
+
 function updateDisplays() {
-  document.getElementById("coinDisplay").classList.toggle("hidden", !coinMode);
+  document.getElementById("levelDisplay").classList.toggle("hidden", timerMode || coinMode || solarMode);
+  document.getElementById("coinDisplay").classList.toggle("hidden", !coinMode && !solarMode);
   document.getElementById("timerDisplay").classList.toggle("hidden", !timerMode);
+  document.getElementById("collectibleName").textContent =
+    solarMode ? "Planets" : "Coins";
 }
 
 function updateInfo() {
@@ -173,6 +237,8 @@ function updateInfo() {
 
 function resetGame() {
   clearTimeout(nextLevelTimer);
+  activePlanet = null;
+  document.getElementById("planetScreen").classList.add("hidden");
   updateDisplays();
   document.getElementById("winScreen").classList.add("hidden");
   document.getElementById("timeScreen").classList.add("hidden");
@@ -181,11 +247,9 @@ function resetGame() {
   gameStarted = document.getElementById("welcome").classList.contains("hidden");
   generateMaze();
 }
-
 document.getElementById("start").onclick = () => {
   document.getElementById("welcome").classList.add("hidden");
   gameStarted = true;
-
   if (timerMode) {
     startTimer();
   }
@@ -204,14 +268,10 @@ document.addEventListener("keydown", (event) => {
   };
 
   const direction = keys[event.key];
-
-  if (!direction || !gameStarted || changingLevel) return;
-
+  if (!direction || !gameStarted || changingLevel || activePlanet !== null) return;
   event.preventDefault();
-
   const nx = player.x + direction[0];
   const ny = player.y + direction[1];
-
   if (nx < 0 || nx >= cols || ny < 0 ||
       ny >= rows || maze[ny][nx] === 1) return;
 
@@ -222,18 +282,40 @@ totalMoves++;
 const coinIndex = coins.findIndex(coin => coin.x === nx && coin.y === ny);
 
 if (coinIndex !== -1) {
-  coins.splice(coinIndex, 1);
-  coinsCollected++;
+  if (solarMode) {
+    askQuestion(coins[coinIndex]);
+    updateInfo();
+    draw();
+    return;
+  } else {
+    coins.splice(coinIndex, 1);
+    coinsCollected++;
+  }
 }
 
 updateInfo();
 draw();
 
 if (nx === cols - 1 && ny === rows - 1) {
-  changingLevel = true;
-  stopTimer();
+changingLevel = true;
+stopTimer();
 
-  if (coinMode) {
+if (solarMode) {
+  gameStarted = false;
+
+  if (coinsCollected === 5) {
+    document.getElementById("timeTitle").textContent = "You Won!";
+    document.getElementById("timeMessage").textContent =
+      "You answered all 5 planet questions and escaped!";
+  } else {
+    document.getElementById("timeTitle").textContent = "You Lost!";
+    document.getElementById("timeMessage").textContent =
+      "You need to collect all 5 planets before escaping!";
+  }
+
+  document.getElementById("timeScreen").classList.remove("hidden");
+
+} else if (coinMode) {
     gameStarted = false;
 
     if (coinsCollected === 5) {
@@ -289,10 +371,11 @@ document.getElementById("timerMode").textContent = "Timer Mode";
   cols = hardMode ? 31 : 18;
   rows = hardMode ? 17 : 10;
 
-  document.getElementById("hardMode").textContent =
-    hardMode ? "Normal Mode" : "Hard Mode";
-
-  resetGame();
+document.getElementById("hardMode").textContent =
+hardMode ? "Normal Mode" : "Hard Mode";
+solarMode = false;
+document.getElementById("solarMode").textContent = "Solar System Mode";
+resetGame();
 };
 
 document.getElementById("playAgain").onclick = () => {
@@ -304,7 +387,8 @@ document.getElementById("playAgain").onclick = () => {
   document.getElementById("hardMode").textContent = "Hard Mode";
   document.getElementById("timerMode").textContent = "Timer Mode";
   document.getElementById("coinMode").textContent = "Coin Mode";
-
+  solarMode = false;
+  document.getElementById("solarMode").textContent = "Solar System Mode";
   resetGame();
 };
 
@@ -315,10 +399,12 @@ document.getElementById("coinMode").onclick = () => {
   cols = 18;
   rows = 10;
   document.getElementById("coinMode").textContent = 
-    coinMode ? "Normal Mode" : "Coin Mode";
-  document.getElementById("hardMode").textContent = "Hard Mode";
-  document.getElementById("timerMode").textContent = "Timer Mode";
-  resetGame();
+  coinMode ? "Normal Mode" : "Coin Mode";
+document.getElementById("hardMode").textContent = "Hard Mode";
+document.getElementById("timerMode").textContent = "Timer Mode";
+solarMode = false;
+document.getElementById("solarMode").textContent = "Solar System Mode";
+resetGame();
 };
 
 document.getElementById("timerMode").onclick = () => {
@@ -328,12 +414,12 @@ document.getElementById("timerMode").onclick = () => {
   cols = 18;
   rows = 10;
   document.getElementById("timerMode").textContent =
-    timerMode ? "Normal Mode" : "Timer Mode";
-
-  document.getElementById("coinMode").textContent = "Coin Mode";
-  document.getElementById("hardMode").textContent = "Hard Mode";
-
-  resetGame();
+  timerMode ? "Normal Mode" : "Timer Mode";
+document.getElementById("coinMode").textContent = "Coin Mode";
+document.getElementById("hardMode").textContent = "Hard Mode";
+solarMode = false;
+document.getElementById("solarMode").textContent = "Solar System Mode";
+resetGame();
 };
 
 document.getElementById("tryAgain").onclick = () => {
@@ -348,6 +434,24 @@ document.getElementById("themeButton").onclick = () => {
   draw();
 };
 
-updateDisplays();
-generateMaze();  
+document.getElementById("solarMode").onclick = () => {
+  solarMode = !solarMode;
+  hardMode = false;
+  timerMode = false;
+  coinMode = false;
 
+  cols = 18;
+  rows = 10;
+
+  document.getElementById("solarMode").textContent =
+    solarMode ? "Normal Mode" : "Solar System Mode";
+
+  document.getElementById("hardMode").textContent = "Hard Mode";
+  document.getElementById("timerMode").textContent = "Timer Mode";
+  document.getElementById("coinMode").textContent = "Coin Mode";
+
+  resetGame();
+};
+
+updateDisplays();
+generateMaze();

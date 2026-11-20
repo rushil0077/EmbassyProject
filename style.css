@@ -101,10 +101,9 @@ button:hover {
 
 .coin-counter {
   color: #ffd700;
-  font-size: 20px;
+  font-size: 18px;
   font-weight: bold;
-  text-align: center;
-  margin: 10px 0;
+  margin: 0;
 }
 
 #timerMode {
@@ -174,4 +173,66 @@ button:hover {
 
 .light-mode .coin-counter {
   color: #b07716;
+}
+
+#solarMode {
+  background: #b794f6;
+  color: black;
+  margin-left: 10px;
+}
+
+#solarMode:hover {
+  background: #9870db;
+}
+
+#planetScreen button {
+  margin: 5px;
+}
+
+#feedback {
+  color: #ff657a;
+  font-weight: bold;
+}
+
+.left-planets {
+  position: fixed;
+  left: 25px;
+  top: 22%;
+  display: flex;
+  flex-direction: column;
+  gap: 75px;
+}
+
+.left-planets img {
+  width: 160px;
+  height: 160px;
+  object-fit: contain;
+}
+
+.left-planets img:nth-child(2){
+  margin-left: 90px;
+}
+
+.right-planets{
+  position: fixed;
+  right: 30px;
+  top: 40%;
+}
+
+.right-planets img {
+  width: 160px;
+  height: 160px;
+  object-fit: contain;
+}
+
+@media (max-width: 1200px) {
+  .left-planets,
+  .right-planets{
+    display: none;
+  }
+}
+
+.recommended {
+  color: #b794f6;
+  font-weight: bold;
 }

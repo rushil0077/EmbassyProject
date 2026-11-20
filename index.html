@@ -8,19 +8,28 @@
 </head>
 <body>
  <div class="container">
+  <div class="left-planets">
+    <img src="Venus.png" alt = "Venus">
+    <img src="Earth.png" alt="Earth">
+    </div>
+
+    <div class="right-planets">
+      <img src="Jupiter.png" alt = "Jupiter">
+    </div>
+
     <h1>Maze Escape</h1>
     <p>Reach The End Cube To Win!</p>
-    <p class="coin-counter hidden" id="coinDisplay">
-    Coins: <span id="coins">0</span>/5
-    </p>
+
 <div class="info">
   <div>
-    <div>Level: <span id="level">1</span></div>
+    <div id="levelDisplay">Level: <span id="level">1</span></div>
     <div id="timerDisplay" class="hidden">
-    Time: <span id="timer">0</span>s
+      Time: <span id="timer">0</span>s
+    </div>
+    <div class="coin-counter hidden" id="coinDisplay">
+      <span id="collectibleName">Coins</span>: <span id="coins">0</span>/5
     </div>
   </div>
-
   <div>
     <div>High Score: <span id="highScore">--</span></div>
     <div>Moves: <span id="moves">0</span></div>
@@ -34,7 +43,14 @@
         <div class="welcome-box">
           <h2>Welcome to Maze Escape!</h2>
           <p>Win by completing the maze by using WASD or the arrows.</p>
-          <p>Explore 4 Different Modes!</p>
+          <p>There are 5 Modes.</p>
+
+          <p>
+            Normal Mode |
+            <span class = "recommended">Solar System Mode (Recommended)</span> |
+            Hard Mode | Timer Mode | Coin Mode
+          </p>
+
           <button id="start">Start Game</button>
         </div>
       </div>
@@ -44,6 +60,17 @@
     <h2 id="timeTitle">Time's Up!</h2>
     <p id="timeMessage">You ran out of time!</p>
     <button id="tryAgain">Try Again</button>
+  </div>
+</div>
+
+<div id="planetScreen" class="overlay hidden">
+  <div class="welcome-box">
+    <h2 id="planetName"></h2>
+    <p id="planetQuestion"></p>
+    <button id="answer0"></button>
+    <button id="answer1"></button>
+    <button id="answer2"></button>
+    <p id="feedback"></p>
   </div>
 </div>
 
@@ -58,6 +85,7 @@
     </div>
 
     <button id="restart">New Maze</button>
+    <button id="solarMode">Solar System Mode</button>
     <button id="hardMode">Hard Mode</button>
     <button id="timerMode">Timer Mode</button>
     <button id="coinMode">Coin Mode</button>
